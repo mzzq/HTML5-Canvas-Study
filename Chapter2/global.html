@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+	<head>
+		<title>letters game</title>
+		<link rel="stylesheet" type="text/css" href="../Css/index.css">
+	</head>
+	<body>
+	<canvas id="letters" width="400px" height="400px"></canvas>
+	<script type="text/javascript">
+		window.addEventListener("load",eventWindowLoaded,false);
+		function eventWindowLoaded(){
+			canvasApp();
+		}
+		// function canvasSupport(){
+		// 	return Modernizer.canvas;
+		// }
+		function canvasApp(){
+			// if(!canvasSupport()){
+			// 	return;
+			// }
+			var thecanvas=document.getElementById('letters');
+			var context=thecanvas.getContext("2d");
+			// var angleInRadians=0;
+			var endangle=Math.PI;
+			var w=Math.PI/3;
+			var a=Math.PI/6;
+			var t=0;
+			var startt=endangle/w;
+			var endt=w/a+startt;
+			var rectscale=0.03;
+			function gameloop(){
+				window.setTimeout(gameloop,30);
+				drawScreen();
+				// gameloop();
+			}
+			function drawScreen(){
+				context.clearRect(0,0,400,400);
+				context.save();
+				context.setTransform(1,0,0,1,0,0);
+				context.translate(200,200);
+				if(t<=startt){
+					angleInRadians=w*t;
+					t+=0.03;
+					rectscale+=0.01;
+				}else if(t<=endt&&t>startt){
+					console.log(angleInRadians);
+					angleInRadians=(w-a*(t-startt)/2)*(t-startt)+endangle;
+					t+=0.03;
+					rectscale+=0.01;
+				}
+				context.rotate(angleInRadians);
+				context.fillStyle="blcak";
+				context.scale(0.6,0.6);
+				context.fillRect(-200,-200,400,400);
+				context.fillStyle="blue";
+				context.scale(rectscale,rectscale);
+				context.fillRect(-55,-55,50,50);
+				context.globalCompositeOperate="source-over";
+				context.fillRect(5,-55,50,50);
+				context.globalCompositeOperate="destination-atop";
+				context.fillRect(5,10,50,50);
+				context.globalAlpha=0.5;
+				context.globalCompositeOperate="source-atop";
+				context.fillRect(-55,10,50,50);
+				context.restore();
+			}
+			gameloop();
+			// drawScreen();
+		}	
+	</script>
+	</body>
+</html> 
