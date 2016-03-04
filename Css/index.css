@@ -2,8 +2,10 @@ body{
 	text-align: center;
 }
 canvas{
-	/*position: absolute;*/
-	margin-top: 100px;
+	position: absolute;
+	/*margin-top: 100px;*/
+	top: 40px;
+	left:420px;
 	border: 1px solid #cfcfcf;
 	border-radius: 5px;
 	opacity: 0.8;
@@ -12,4 +14,32 @@ canvas{
 	height:400px;
 	-webkit-box-shadow:0px 3px #cfcfcf;
 	box-shadow:0px 3px #cfcfcf;
+}
+form{
+	position: absolute;
+	top: 40px;
+	left: 10px;
+	text-align: left;
+	/*margin-top: 100px;*/
+	border: 1px solid #cfcfcf;
+	border-radius: 5px;
+	opacity: 0.8;
+	width: 400px;
+	height:800px;
+	-webkit-box-shadow:0px 3px #cfcfcf;
+	box-shadow:0px 3px #cfcfcf;
+}
+form div{
+	position: relative;
+	width: 100%;
+	line-height: 40px;
+	border-bottom: 1px solid #cfcfcf;
+}
+label{
+	padding:10px;
+}
+input,select{
+	float: right;
+	margin-top:10px;
+	outline: none;
 }

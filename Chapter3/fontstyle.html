@@ -1,0 +1,298 @@
+﻿<!doctype html>
+	<html>
+		<head>
+			<title>font style</title>
+			<link rel="stylesheet" type="text/css" href="../Css/index.css">
+			<script type="text/javascript" src="../Js/jscolor.js"></script>
+		</head>
+		<body>
+		<canvas id="letters" width="400px" height="400px"></canvas>
+		<form>
+		<div>
+			<label>文本</label><input type="text" placeholder="your text" id="textbox"><br/>
+		</div>
+		<div>
+			<label>文本的x坐标</label>
+			<input type="range" min="0" max="400" step="1" value="100" id="font_x">
+		</div>
+		<div>
+			<label>文本的y坐标</label>
+			<input type="range" min="0" max="400" step="1" value="100" id="font_y">
+		</div>
+		<div>
+			<label>Fill or Stroke</label>
+			<select id="fillOrstroke">
+				<option value="fill">fill</option>
+				<option value="stroke">stroke</option>
+				<option value="both">both</option>
+			</select>
+		</div>
+		<div>
+			<label>font Style</label>
+			<select id="font_style">
+				<option value="normal">normal</option>
+				<option value="italic">italic</option>
+				<option value="oblique">oblique</option>
+			</select>
+		</div>
+		<div>
+			<label>Font Weight</label>
+			<select id="font_weight">
+				<option value="normal">normal</option>
+				<option value="bold">bold</option>
+				<option value="bolder">bolder</option>
+				<option value="lighter">lighter</option>
+			</select>
+		</div>
+		<div>
+			<label>text Font</label>
+			<select id="text_font">
+				<option value="serif">serif</option>
+				<option value="sans-serif">sans-serif</option>
+				<option value="cursive">cursive</option>
+				<option value="fantasy">fantasy</option>
+				<option value="monospace">monospace</option>
+				<option value="微软雅黑">微软雅黑</option>
+			</select>
+		</div>
+		<div>
+			<label>font Size</label>
+			<input type="range" min="0" max="200" step="1" value="50" id="font_size">
+		</div>
+		<div>
+			<label>fill颜色</label>
+			<input class="color" value="#96CBFF" id="fillcolor">
+		</div>
+		<div>
+			<label>stroke颜色</label>
+			<input class="color" value="#0000FF" id="strokecolor">
+		</div>
+		<div>
+			<label>text Baseline</label>
+			<select id="text_baseline">
+				<option value="middle">middle</option>
+				<option value="top">top</option>
+				<option value="hanging">hanging</option>
+				<option value="alphabetic">alphabetic</option>
+				<option value="ideographic">ideographic</option>
+				<option value="bottom">bottom</option>
+			</select>
+		</div>
+		<div>
+			<label>text align</label>
+			<select id="text_align">
+				<option value="center">center</option>
+				<option value="start">start</option>
+				<option value="end">end</option>
+				<option value="left">left</option>
+				<option value="right">right</option>
+			</select>
+		</div>
+		<div>
+			<label>透明度</label>
+			<input type="range" min="0" max="1" step="0.01" value="1" id="font_alpha">
+		</div>
+		<div>
+			<label>阴影的x偏移量</label>
+			<input type="range" min="-100" max="100" step="1" value="0" id="shadow_x">
+		</div>
+		<div>
+			<label>阴影的y偏移量</label>
+			<input type="range" min="-100" max="100" step="1" value="0" id="shadow_y">
+		</div>
+		<div>
+			<label>阴影的模糊程度</label>
+			<input type="range" min="0" max="100" step="1" value="0" id="shadow_blur">
+		</div>
+		<div>
+			<label>stroke颜色</label>
+			<input class="color" value="#0000FF" id="shadow_color">
+		</div>
+		</form>
+		<script type="text/javascript">
+			window.addEventListener("load",eventWindowLoaded,false);
+			function eventWindowLoaded(){
+				canvasApp();
+			}
+			// function canvasSupport(){
+			// 	return Modernizer.canvas;
+			// }
+			function canvasApp(){
+				// if(!canvasSupport()){
+				// 	return;
+				// }
+				var thecanvas=document.getElementById('letters');
+				var context=thecanvas.getContext("2d");
+				var font_size="50";
+				var font_style="normal";
+				var font_weight="normal";
+				var font_family="serif";
+				var fontElement;
+				var font_fill="fill";
+				var font_value="Hello world";
+				var font_fillcolor="#96CBFF";
+				var font_strokecolor="#000000";
+				var text_align="left";
+				var text_baseline="middle";
+				var font_alpha="1";
+				var font_x="100";
+				var font_y="100";
+				var shadow_x="1";
+				var shadow_y="1";
+				var shadow_blur="0";
+				var shadow_color="#000000";
+				fontElement=document.getElementById("textbox");
+				fontElement.addEventListener("keyup",textValueChanged,false);
+				fontElement=document.getElementById("font_x");
+				fontElement.addEventListener("change",fontXChanged,false);
+				fontElement=document.getElementById("font_y");
+				fontElement.addEventListener("change",fontYChanged,false);
+				fontElement=document.getElementById("font_size");
+				fontElement.addEventListener("change",textSizeChanged,false);
+				fontElement=document.getElementById("fillOrstroke");
+				fontElement.addEventListener("change",textFillChanged,false);
+				fontElement=document.getElementById("font_style");
+				fontElement.addEventListener("change",textStyleChanged,false);
+				fontElement=document.getElementById("font_weight");
+				fontElement.addEventListener("change",textWeightChanged,false);
+				fontElement=document.getElementById("text_font");
+				fontElement.addEventListener("change",textFontChanged,false);
+				fontElement=document.getElementById("fillcolor");
+				fontElement.addEventListener("change",textfillColorChanged,false);
+				fontElement=document.getElementById("strokecolor");
+				fontElement.addEventListener("change",textstrokeColorChanged,false);
+				fontElement=document.getElementById("text_align");
+				fontElement.addEventListener("change",textAlignChanged,false);
+				fontElement=document.getElementById("text_baseline");
+				fontElement.addEventListener("change",textbaselineChanged,false);
+				fontElement=document.getElementById("font_alpha");
+				fontElement.addEventListener("change",fontAlphaChanged,false);
+				fontElement=document.getElementById("shadow_x");
+				fontElement.addEventListener("change",shadowXChanged,false);
+				fontElement=document.getElementById("shadow_y");
+				fontElement.addEventListener("change",shadowYChanged,false);
+				fontElement=document.getElementById("shadow_blur");
+				fontElement.addEventListener("change",shadowBlurChanged,false);
+				fontElement=document.getElementById("shadow_color");
+				fontElement.addEventListener("change",shadowColorChanged,false);
+				function textSizeChanged(e){
+					var target=e.target;
+					font_size=target.value;
+					console.log(font_size);
+					drawScreen();
+				}
+				function fontXChanged(e){
+					var target=e.target;
+					font_x=target.value;
+					drawScreen();
+				}
+				function fontYChanged(e){
+					var target=e.target;
+					font_y=target.value;
+					drawScreen();
+				}
+				function textValueChanged(e){
+					var target=e.target;
+					font_value=target.value;
+					drawScreen();
+				}
+				function textFillChanged(e){
+					var target=e.target;
+					font_fill=target.value;
+					drawScreen();
+				}
+				function textStyleChanged(e){
+					var target=e.target;
+					font_style=target.value;
+					drawScreen();
+				}
+				function textWeightChanged(e){
+					var target=e.target;
+					font_weight=target.value;
+					console.log(font_weight);
+					drawScreen();
+				}
+				function textFontChanged(e){
+					var target=e.target;
+					font_family=target.value;
+					drawScreen();
+				}
+				function textfillColorChanged(e){
+					var target=e.target;
+					font_fillcolor=target.value;
+					drawScreen();
+				}
+				function textstrokeColorChanged(e){
+					var target=e.target;
+					font_strokecolor=target.value;
+					drawScreen();
+				}
+				function textAlignChanged(e){
+					var target=e.target;
+					text_align=target.value;
+					drawScreen();
+				}
+				function textbaselineChanged(e){
+					var target=e.target;
+					text_baseline=target.value;
+					drawScreen();
+				}
+				function fontAlphaChanged(e){
+					var target=e.target;
+					font_alpha=target.value;
+					drawScreen();
+				}
+				function shadowBlurChanged(e){
+					var target=e.target;
+					shadow_blur=target.value;
+					drawScreen();
+				}
+				function shadowXChanged(e){
+					var target=e.target;
+					shadow_x=target.value;
+					drawScreen();
+				}
+				function shadowYChanged(e){
+					var target=e.target;
+					shadow_y=target.value;
+					drawScreen();
+				}
+				function shadowColorChanged(e){
+					var target=e.target;
+					shadow_color=target.value;
+					drawScreen();
+				}
+				function drawScreen(){
+					context.clearRect(0,0,400,400);
+					context.save();
+					context.font=font_weight+" "+font_style+" "+font_size+"px "+font_family;
+					context.textAlign=text_align;
+					context.globalAlpha=font_alpha;
+					context.textBaseline=text_baseline;
+					context.shadowOffsetX=shadow_x;
+					context.shadowOffsetY=shadow_y;
+					context.shadowBlur=shadow_blur;
+					context.shadowColor=shadow_color;
+					switch(font_fill){
+						case "fill":
+							context.fillStyle=font_fillcolor;
+							context.fillText(font_value,font_x,font_y);
+							break;
+						case "stroke":
+							context.strokeStyle=font_strokecolor;
+							context.strokeText(font_value,font_x,font_y);
+							break;
+						case "both":
+							context.fillStyle=font_fillcolor;
+							context.fillText(font_value,font_x,font_y);
+							context.strokeStyle=font_strokecolor;
+							context.strokeText(font_value,font_x,font_y);
+							break;
+					}
+					context.restore();
+				}
+				drawScreen();
+			}	
+		</script>
+		</body>
+	</html>
