@@ -6,22 +6,23 @@
 			<script type="text/javascript" src="../Js/jscolor.js"></script>
 		</head>
 		<body>
-		<canvas id="letters" width="400px" height="400px"></canvas>
+		<canvas id="letters" width="800px" height="400px" class="fontstyle"></canvas>
 		<form>
 		<div>
 			<label>文本</label><input type="text" placeholder="your text" id="textbox"><br/>
 		</div>
-		<div>
+		<!-- <div>
 			<label>文本的x坐标</label>
 			<input type="range" min="0" max="400" step="1" value="100" id="font_x">
 		</div>
 		<div>
 			<label>文本的y坐标</label>
 			<input type="range" min="0" max="400" step="1" value="100" id="font_y">
-		</div>
+		</div> -->
 		<div>
 			<label>Fill or Stroke</label>
 			<select id="fillOrstroke">
+				<option value="gradient">gradient</option>
 				<option value="fill">fill</option>
 				<option value="stroke">stroke</option>
 				<option value="both">both</option>
@@ -47,17 +48,17 @@
 		<div>
 			<label>text Font</label>
 			<select id="text_font">
-				<option value="serif">serif</option>
-				<option value="sans-serif">sans-serif</option>
 				<option value="cursive">cursive</option>
+				<option value="微软雅黑">微软雅黑</option>
+				<option value="sans-serif">sans-serif</option>
 				<option value="fantasy">fantasy</option>
 				<option value="monospace">monospace</option>
-				<option value="微软雅黑">微软雅黑</option>
+				<option value="serif">serif</option>
 			</select>
 		</div>
 		<div>
 			<label>font Size</label>
-			<input type="range" min="0" max="200" step="1" value="50" id="font_size">
+			<input type="range" min="0" max="200" step="1" value="80" id="font_size">
 		</div>
 		<div>
 			<label>fill颜色</label>
@@ -90,23 +91,31 @@
 		</div>
 		<div>
 			<label>透明度</label>
-			<input type="range" min="0" max="1" step="0.01" value="1" id="font_alpha">
+			<input type="range" min="0" max="1" step="0.01" value="0.8" id="font_alpha">
 		</div>
 		<div>
 			<label>阴影的x偏移量</label>
-			<input type="range" min="-100" max="100" step="1" value="0" id="shadow_x">
+			<input type="range" min="-100" max="100" step="1" value="4" id="shadow_x">
 		</div>
 		<div>
 			<label>阴影的y偏移量</label>
-			<input type="range" min="-100" max="100" step="1" value="0" id="shadow_y">
+			<input type="range" min="-100" max="100" step="1" value="4" id="shadow_y">
 		</div>
 		<div>
 			<label>阴影的模糊程度</label>
-			<input type="range" min="0" max="100" step="1" value="0" id="shadow_blur">
+			<input type="range" min="0" max="100" step="1" value="5" id="shadow_blur">
 		</div>
 		<div>
 			<label>stroke颜色</label>
 			<input class="color" value="#0000FF" id="shadow_color">
+		</div>
+		<div>
+			<label>线性渐变初颜色</label>
+			<input class="color" value="#000000" id="gradient_scolor">
+		</div>
+		<div>
+			<label>线性渐变终颜色</label>
+			<input class="color" value="#ff21b5" id="gradient_ecolor">
 		</div>
 		</form>
 		<script type="text/javascript">
@@ -123,30 +132,35 @@
 				// }
 				var thecanvas=document.getElementById('letters');
 				var context=thecanvas.getContext("2d");
-				var font_size="50";
+				var font_size="80";
 				var font_style="normal";
 				var font_weight="normal";
-				var font_family="serif";
+				var font_family="cursive";
 				var fontElement;
-				var font_fill="fill";
-				var font_value="Hello world";
+				var font_fill="gradient";
+				var font_value="MZZ";
 				var font_fillcolor="#96CBFF";
 				var font_strokecolor="#000000";
 				var text_align="left";
 				var text_baseline="middle";
-				var font_alpha="1";
+				var font_alpha="0.8";
 				var font_x="100";
 				var font_y="100";
-				var shadow_x="1";
-				var shadow_y="1";
-				var shadow_blur="0";
-				var shadow_color="#000000";
+				var shadow_x="-2";
+				var shadow_y="2";
+				var shadow_blur="5";
+				var shadow_color="#0000ff";
+				var gradient_scolor="000000";
+				var gradient_ecolor="ff21b5";
+				var gradient=font_fillcolor;
+				var metrics=context.measureText(font_value);
+				font_x=(thecanvas.width/2)-(metrics.width/2);
 				fontElement=document.getElementById("textbox");
 				fontElement.addEventListener("keyup",textValueChanged,false);
-				fontElement=document.getElementById("font_x");
-				fontElement.addEventListener("change",fontXChanged,false);
-				fontElement=document.getElementById("font_y");
-				fontElement.addEventListener("change",fontYChanged,false);
+				// fontElement=document.getElementById("font_x");
+				// fontElement.addEventListener("change",fontXChanged,false);
+				// fontElement=document.getElementById("font_y");
+				// fontElement.addEventListener("change",fontYChanged,false);
 				fontElement=document.getElementById("font_size");
 				fontElement.addEventListener("change",textSizeChanged,false);
 				fontElement=document.getElementById("fillOrstroke");
@@ -175,25 +189,30 @@
 				fontElement.addEventListener("change",shadowBlurChanged,false);
 				fontElement=document.getElementById("shadow_color");
 				fontElement.addEventListener("change",shadowColorChanged,false);
+				fontElement=document.getElementById("gradient_ecolor");
+				fontElement.addEventListener("change",gradientEcolorChanged,false);
+				fontElement=document.getElementById("gradient_scolor");
+				fontElement.addEventListener("change",gradientScolorChanged,false);
 				function textSizeChanged(e){
 					var target=e.target;
 					font_size=target.value;
 					console.log(font_size);
 					drawScreen();
 				}
-				function fontXChanged(e){
-					var target=e.target;
-					font_x=target.value;
-					drawScreen();
-				}
-				function fontYChanged(e){
-					var target=e.target;
-					font_y=target.value;
-					drawScreen();
-				}
+				// function fontXChanged(e){
+				// 	var target=e.target;
+				// 	font_x=target.value;
+				// 	drawScreen();
+				// }
+				// function fontYChanged(e){
+				// 	var target=e.target;
+				// 	font_y=target.value;
+				// 	drawScreen();
+				// }
 				function textValueChanged(e){
 					var target=e.target;
 					font_value=target.value;
+					console.log(font_value);
 					drawScreen();
 				}
 				function textFillChanged(e){
@@ -260,19 +279,48 @@
 				function shadowColorChanged(e){
 					var target=e.target;
 					shadow_color=target.value;
+					console.log(shadow_color);
+					drawScreen();
+				}
+				function gradientScolorChanged(e){
+					var target=e.target;
+					gradient_scolor=target.value;
+					console.log(gradient_scolor);
+					drawScreen();
+				}
+				function gradientEcolorChanged(e){
+					var target=e.target;
+					gradient_ecolor=target.value;
 					drawScreen();
 				}
 				function drawScreen(){
 					context.clearRect(0,0,400,400);
 					context.save();
 					context.font=font_weight+" "+font_style+" "+font_size+"px "+font_family;
+					// context.clearRect(font_x-20,font_y-50,metrics.width+40,130);
+					metrics=context.measureText(font_value);
+					console.log(metrics.width);
+					font_x=(thecanvas.width/2)-(metrics.width/2);
+					font_y=(thecanvas.height/3);					
+					context.fillStyle="#000000";
+					context.fillRect(0,0,800,400);
+					// context.stroke="#000000";
+					// context.strokeRect(font_x-20,font_y-50,metrics.width+40,100);
+					// context.strokeStyle="#000000";
+					// context.strokeRect(10,10,390,390);
+					
+
 					context.textAlign=text_align;
 					context.globalAlpha=font_alpha;
 					context.textBaseline=text_baseline;
+					gradient=context.createLinearGradient(font_x-20,font_y-80,font_x-20,font_y+80);
+					gradient.addColorStop(0,"#"+gradient_scolor);
+					gradient.addColorStop(1,"#"+gradient_ecolor);
 					context.shadowOffsetX=shadow_x;
 					context.shadowOffsetY=shadow_y;
 					context.shadowBlur=shadow_blur;
 					context.shadowColor=shadow_color;
+					// context.save();
 					switch(font_fill){
 						case "fill":
 							context.fillStyle=font_fillcolor;
@@ -287,6 +335,10 @@
 							context.fillText(font_value,font_x,font_y);
 							context.strokeStyle=font_strokecolor;
 							context.strokeText(font_value,font_x,font_y);
+							break;
+						case "gradient":
+							context.fillStyle=gradient;
+							context.fillText(font_value,font_x,font_y);
 							break;
 					}
 					context.restore();
