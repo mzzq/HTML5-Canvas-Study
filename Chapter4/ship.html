@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+	<head>
+		<title>letters game</title>
+		<link rel="stylesheet" type="text/css" href="../Css/index.css">
+	</head>
+	<body>
+	<canvas id="letters" width="400px" height="400px"></canvas>
+	<script type="text/javascript">
+		window.addEventListener("load",eventWindowLoaded,false);
+		function eventWindowLoaded(){
+			canvasApp();
+		}
+		// function canvasSupport(){
+		// 	return Modernizer.canvas;
+		// }
+		function canvasApp(){
+			// if(!canvasSupport()){
+			// 	return;
+			// }
+			var thecanvas=document.getElementById('letters');
+			var context=thecanvas.getContext("2d");
+			var counter=0;
+			var x=0;
+			var y=new Array(400,480,540,620,680,760);
+			var objectarray=new Array(6);
+			for (var i = 0; i<=objectarray.length - 1;i++) {
+				objectarray[i]=new Image();
+				objectarray[i].src="../Img/ships.png";
+				var tempx=getX();
+				console.log(tempx);
+				if(tempx!=null){
+					objectarray[i].positionx=tempx;
+				}else{
+					i--;
+					continue;
+				}
+				if(Math.random()-0.5<0){
+					objectarray[i].counter=0;
+				}else{
+					objectarray[i].counter=1;
+				}
+				objectarray[i].addEventListener('load',eventSheetLoaded,false);
+			};
+			function eventSheetLoaded(){
+				startUp();
+
+			}
+			function startUp () {
+				gameloop();
+			}
+			function gameloop(){
+				window.setTimeout(gameloop,60);
+				drawScreen();
+				// gameloop();
+			}
+			function getX(){
+				var tempx=x;
+				x=Math.random()*1000%400;
+				if(Math.abs(x-tempx)<64){
+					if(x+64>336)
+					{
+						x=tempx;
+						return getX();
+					}
+					else{
+						x+=64;
+						// objectarray[i].positionx=x;
+						return x;
+					}
+				}else{
+					if(x+64<400&&x-64>0){
+						return x;
+					}
+					else{
+						x=tempx;
+						return getX();
+					}
+				}
+			}
+			function drawScreen(){
+				context.fillStyle="#aaaaaa";
+				context.fillRect(0,0,400,400);
+				for (var i =0; i <= y.length - 1; i++) {
+					context.drawImage(objectarray[i],32*objectarray[i].counter,0,32,32,objectarray[i].positionx,y[i],64,64);
+					objectarray[i].counter++;
+					if(objectarray[i].counter>1){
+						objectarray[i].counter=0;
+					}
+					y[i]--;
+					if (y[i]<-64) {
+						// y[i]=400;
+						if(i==0){
+							x=objectarray[y.length - 1].positionx;
+						}else{
+							x=objectarray[i-1].positionx;
+						}
+						var tempx=getX();
+						console.log(tempx);
+						objectarray[i].positionx=tempx;
+						y[i]=400;
+					};
+				};
+			}
+		}	
+	</script>
+	</body>
+</html> 
