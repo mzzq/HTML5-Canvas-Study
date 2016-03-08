@@ -1,0 +1,154 @@
+﻿<!doctype html>
+<html>
+	<head>
+		<title>letters game</title>
+		<link rel="stylesheet" type="text/css" href="../Css/index.css">
+	</head>
+	<body>
+	<canvas id="letters" width="400px" height="400px"></canvas>
+	<div class="tanks_option">
+		<span>操作说明</span>
+		<ul>
+			<li><span>"up"键</span>向上移动</li>
+			<li><span>"down"键</span>向下移动</li>
+			<li><span>"left"键</span>向左移动</li>
+			<li><span>"right"键</span>向右移动</li>
+			<li><span>"F"键</span>开火</li>
+		</ul>
+	</div>
+	<script type="text/javascript">
+		window.addEventListener("load",eventWindowLoaded,false);
+		function eventWindowLoaded(){
+			canvasApp();
+		}
+		// function canvasSupport(){
+		// 	return Modernizer.canvas;
+		// }
+		function canvasApp(){
+			// if(!canvasSupport()){
+			// 	return;
+			// }
+			var thecanvas=document.getElementById('letters');
+			var context=thecanvas.getContext("2d");
+			var tanks=new Image();
+			tanks.src="../Img/tanks_sheet.png";
+			tanks.addEventListener('load',eventTanksLoaded,false);
+			var animationFrame=[1,2,3,4,5,6,7,8];
+			var frameIndex=0;
+			var posX=208;
+			var posY=208;
+			var dx=0;
+			var dy=-1;
+			var firex=-100;
+			var firey=-100;
+			var ratation=0;
+			var fire=false;
+			var drection="up";
+			document.onkeydown=function(event){
+				var e = event || window.event || arguments.callee.caller.arguments[0];
+              	if(e && e.keyCode==38){ // 按上
+                  	ratation=0;
+                  	dx=0;
+                  	dy=-1;
+                  	drection="up";
+                }
+              	if(e && e.keyCode==40){// 按下
+                  	ratation=180;
+                  	dx=0;
+                  	dy=1;
+                  	drection="down";
+                }            
+              	if(e && e.keyCode==37){ // 按左
+                  	ratation=270;
+                  	dy=0;
+                  	dx=-1;
+                  	drection="left";
+             	}
+             	if(e && e.keyCode==39){ // 按右
+                  	ratation=90;
+                  	dy=0;
+                  	dx=1;
+                  	drection="right";
+             	}
+             	if(e && e.keyCode==70){ // 按F
+                  console.log("F");
+                  fire=true;
+             	}
+			}
+			function firing(){
+				switch(drection){
+					case "up":
+						firex=posX;
+						firey=posY-16;
+						break;
+					case "down":
+						firex=posX;
+						firey=posY+16;
+						break;
+					case "left":
+						firex=posX-16;
+						firey=posY;
+						break;
+					case "right":
+						firex=posX+16;
+						firey=posY;
+						break;
+				}
+			}
+			function eventTanksLoaded(){
+				startUp();
+
+			}
+			function startUp () {
+				gameloop();
+			}
+			function gameloop(){
+				window.setTimeout(gameloop,60);
+				drawScreen();
+				// gameloop();
+			}
+			function drawScreen(){
+				context.fillStyle="#aaaaaa";
+				context.fillRect(0,0,400,400);
+				context.save();
+				context.setTransform(1,0,0,1,0,0);
+				posX+=dx;
+				posY+=dy;
+				if(posY<=0){
+					posY=0;
+				}
+				if(posX<=0){
+					posX=0;
+				}
+				if(posX>368){
+					posX=368;
+				}
+				if (posY>368) {
+					posY=368;
+				}
+				context.translate(posX+16,posY+16);
+				var angleInRadians=ratation*Math.PI/180;
+				context.rotate(angleInRadians);
+				var sourceX=Math.floor(animationFrame[frameIndex]%8)*32;
+				var sourceY=Math.floor(animationFrame[frameIndex]/8)*32;
+
+				context.drawImage(tanks,sourceX,sourceY,32,32,-16,-16,32,32);
+				frameIndex++;
+				if(frameIndex==animationFrame.length){
+					frameIndex=0;
+				}
+				context.restore();
+				if(fire){
+					firing();
+					// console.log(firex+firey);
+					context.drawImage(tanks,5*32,2*32,32,32,firex,firey,32,32);
+					fire=false;
+				}
+				firex+=8*dx;
+				firey+=8*dy;
+				context.drawImage(tanks,5*32,2*32,32,32,firex,firey,32,32);
+			}
+		}	
+	</script>
+	</body>
+</html> 
