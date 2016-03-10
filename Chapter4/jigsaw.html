@@ -1,0 +1,168 @@
+﻿<!doctype html>
+<html>
+	<head>
+		<title>letters game</title>
+		<link rel="stylesheet" type="text/css" href="../Css/index.css">
+		<script src="../Js/modernizr.js"></script>
+	</head>
+	<body>
+	<canvas id="pintu" width="400px" height="800px"></canvas>
+	<div class="pintu_option">
+		<span>拼图说明</span>
+		<p>将一张张的小图移到下面空白位置，直到下面空白位置呈现原图</p>
+		<p>鼠标点击选中一张图片，然后鼠标再点击下面空白拼版的相应位置即可复制过去</p>
+		<button id="img_display">查看原图</button><br/>
+		<img id="img_dis" src="../Img/helloworld.jpg"/>
+	</div>
+	<script type="text/javascript">
+		window.addEventListener("load",eventWindowLoaded,false);
+		function eventWindowLoaded(){
+			canvasApp();
+		}
+		function canvasSupport(){
+			return Modernizr.canvas;
+		}
+		function canvasApp(){
+			if(!canvasSupport()){
+				return;
+			}
+			var thecanvas=document.getElementById('pintu');
+			var context=thecanvas.getContext("2d");
+			thecanvas.addEventListener('mousemove',onMouseMove,false);
+			thecanvas.addEventListener('click',onMouseClick,false);
+			var btnimg=document.getElementById('img_display');
+			btnimg.addEventListener('click',imgDispaly,false);
+			var img=document.getElementById('img_dis');
+			var tanks=new Image();
+			// tanks.crossOrigin = "Anonymous";
+			tanks.addEventListener('load',eventTanksLoaded,false);
+			tanks.src="../Img/helloworld.jpg";
+			var imgRow=4;
+			var imgCol=4;
+			var scaleimg=parseInt(tanks.width/800);
+			// var everyimgW=parseInt(tanks.width/(imgRow*scaleimg))*scaleimg;
+			// var everyimgH=parseInt(tanks.height/(imgCol*scaleimg))*scaleimg;
+			// var newimgH=everyimgH/scaleimg;
+			// var newimgW=everyimgW/scaleimg;
+			var newimgW=parseInt(800/imgCol);
+			console.log(parseInt(scaleimg*(tanks.height/imgRow)));
+			var newimgH=parseInt(scaleimg*(tanks.height/imgRow));
+			var everyimgW=parseInt(tanks.width/imgCol);
+			var everyimgH=parseInt(tanks.height/imgRow);
+			var imgheight=newimgH*imgRow;
+			var imgwidth=newimgW*imgCol;
+			console.log("height....."+imgheight);
+			thecanvas.width=imgwidth;
+			thecanvas.height=imgheight*2;
+			var mouseX;
+			var mouseY;
+			var oldX;
+			var oldY;
+			var rown;
+			var coln;
+			console.log("Awh:"+imgwidth+" "+imgheight);
+			// var samllimg={"rowint":0,"colint":0}
+			function initCanvas(){
+				thecanvas.width=imgwidth;
+				thecanvas.height=imgheight*2;
+			}
+			function initArray(imgs){
+				for(var rowCtr=0;rowCtr<imgRow;rowCtr++)
+					for(var colCtr=0;colCtr<imgCol;colCtr++)
+					{
+						var samllimg=new Object();
+						samllimg.colint=colCtr;
+						samllimg.rowint=rowCtr;
+						imgs.push(samllimg);
+					}
+				console.log(imgs);
+				for (var i = imgs.length - 1; i >= 0; i--) {
+					exchangeImg(imgs);
+				};
+			}
+			function imgDispaly(){
+				img.style.opacity=1;
+
+			}
+			function exchangeImg(imgs){
+				var amount=imgs.length;
+				var firstIndex=parseInt(Math.random()*100%amount);
+				var secondIndex=parseInt(Math.random()*100%amount);
+				var temp=new Object();
+				temp.colint=imgs[firstIndex].colint;
+				temp.rowint=imgs[firstIndex].rowint;
+				imgs[firstIndex].colint=imgs[secondIndex].colint;
+				imgs[firstIndex].rowint=imgs[secondIndex].rowint;
+				imgs[secondIndex].colint=temp.colint;
+				imgs[secondIndex].rowint=temp.rowint;
+			}
+			function tagHighLight(x,y){
+				// console.log(oldY);
+				if(oldY!="undefined"){
+					// context.clearRect(oldX,oldY,newimgW,newimgH);
+					context.save();
+					// context.globalAlpha=0.5;
+					context.strokeStyle="#ffffff";
+					context.strokeRect(oldX,oldY,newimgW,newimgH);
+					context.restore();
+					
+				}
+				context.save();
+				// context.globalAlpha=0.8;
+				context.strokeStyle="#000000";
+				context.strokeRect(x,y,newimgW,newimgH);
+				context.restore();
+				oldY=y;
+				oldX=x;
+				
+			}
+			function onMouseMove(e){
+				console.log(thecanvas.offsetLeft+ " offset "+thecanvas.offsetTop);
+				console.log(e.clientX+ " e "+e.clientY);
+				mouseX=e.clientX-thecanvas.offsetLeft;
+				mouseY=e.clientY-thecanvas.offsetTop;
+				console.log(mouseX+" mouse "+mouseY);
+				// whichImg();
+			}
+			function whichImg(){
+				console.log("mX:"+mouseX+" "+"nW:"+newimgW+" mY:"+mouseY+" "+"nH:"+newimgH);
+				rown=Math.floor(mouseY/100);	//为什么是100？？？？？？？？？？
+				coln=Math.floor(mouseX/newimgW);
+				console.log("row:"+rown+" col:"+coln);
+			}
+			function onMouseClick(e){
+				if (mouseY<=400) {
+					whichImg();
+					tagHighLight(coln*newimgW,rown*newimgH);
+				}else{
+					var imgdate=context.getImageData(coln*newimgW,rown*newimgH,newimgW,newimgH);
+					var newCanvasrow=Math.floor(mouseY/100);
+					var newCanvascol=Math.floor(mouseX/newimgW);
+					context.putImageData(imgdate,newCanvascol*newimgW,newCanvasrow*newimgH);
+				}
+			}
+			function eventTanksLoaded(){
+				var imgs=new Array();
+				initCanvas();
+				initArray(imgs);
+				drawScreen(imgs);
+			}
+			function drawScreen(imgs){
+				context.fillStyle="#aaaaaa";
+				context.fillRect(0,imgheight,imgwidth,imgheight);				
+				var numing=imgs.length-1;
+				for(var rowCtr=0;rowCtr<imgRow;rowCtr++)
+					for(var colCtr=0;colCtr<imgCol&&numing>=0;colCtr++,numing--){
+						console.log(newimgH);
+						context.drawImage(tanks,imgs[numing].colint*everyimgW,imgs[numing].rowint*everyimgH,everyimgW,everyimgH,colCtr*newimgW,rowCtr*newimgH,newimgW,newimgH);
+						context.save();
+						context.globalAlpha=0.5;
+						context.strokeStyle="#ffffff";
+						context.strokeRect(colCtr*newimgW,rowCtr*newimgH,newimgW,newimgH);
+						context.restore();
+					}
+			}
+		}	
+	</script>
+	</body>
+</html> 
