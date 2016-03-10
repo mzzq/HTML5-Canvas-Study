@@ -11,39 +11,52 @@
 		<span>拼图说明</span>
 		<p>将一张张的小图移到下面空白位置，直到下面空白位置呈现原图</p>
 		<p>鼠标点击选中一张图片，然后鼠标再点击下面空白拼版的相应位置即可复制过去</p>
-		<button id="img_display">查看原图</button><br/>
-		<img id="img_dis" src="../Img/helloworld.jpg"/>
+		<button id="img_display">查看原图</button><button id="next">下一张图</button><br/>
+		<img id="img_dis" src="../Img/jigsaw_imgs/0.jpg"/>
 	</div>
 	<script type="text/javascript">
 		window.addEventListener("load",eventWindowLoaded,false);
 		function eventWindowLoaded(){
-			canvasApp();
+			var img_num=0;
+			var img_url="../Img/jigsaw_imgs/0.jpg";
+			canvasApp(img_url);
+			var btnimg=document.getElementById('img_display');
+			var img=document.getElementById('img_dis');
+			btnimg.addEventListener('click',function(){img.style.opacity=1;},false);
+			var btnnext=document.getElementById('next');
+			btnnext.addEventListener('click',function(){
+				img_num++;
+				if(img_num==10){
+					img_num=0;
+				}
+				img_url="../Img/jigsaw_imgs/"+img_num+".jpg";
+				img.style.opacity=0;
+				img.src=img_url;
+				img.addEventListener('load',function(){
+					canvasApp(img_url);
+				},false);
+				
+			},false);
 		}
 		function canvasSupport(){
 			return Modernizr.canvas;
 		}
-		function canvasApp(){
+		function canvasApp(img_url){
 			if(!canvasSupport()){
 				return;
 			}
 			var thecanvas=document.getElementById('pintu');
 			var context=thecanvas.getContext("2d");
+			// context.clearRect(0,0,800,800);
 			thecanvas.addEventListener('mousemove',onMouseMove,false);
 			thecanvas.addEventListener('click',onMouseClick,false);
-			var btnimg=document.getElementById('img_display');
-			btnimg.addEventListener('click',imgDispaly,false);
-			var img=document.getElementById('img_dis');
+			
 			var tanks=new Image();
-			// tanks.crossOrigin = "Anonymous";
 			tanks.addEventListener('load',eventTanksLoaded,false);
-			tanks.src="../Img/helloworld.jpg";
+			tanks.src=img_url;
 			var imgRow=4;
 			var imgCol=4;
 			var scaleimg=parseInt(tanks.width/800);
-			// var everyimgW=parseInt(tanks.width/(imgRow*scaleimg))*scaleimg;
-			// var everyimgH=parseInt(tanks.height/(imgCol*scaleimg))*scaleimg;
-			// var newimgH=everyimgH/scaleimg;
-			// var newimgW=everyimgW/scaleimg;
 			var newimgW=parseInt(800/imgCol);
 			console.log(parseInt(scaleimg*(tanks.height/imgRow)));
 			var newimgH=parseInt(scaleimg*(tanks.height/imgRow));
@@ -54,12 +67,12 @@
 			console.log("height....."+imgheight);
 			thecanvas.width=imgwidth;
 			thecanvas.height=imgheight*2;
-			var mouseX;
-			var mouseY;
-			var oldX;
-			var oldY;
-			var rown;
-			var coln;
+			var mouseX=-1;
+			var mouseY=-1;
+			var oldX=-1;
+			var oldY=-1;
+			var rown=-1;
+			var coln=-1;
 			console.log("Awh:"+imgwidth+" "+imgheight);
 			// var samllimg={"rowint":0,"colint":0}
 			function initCanvas(){
@@ -80,10 +93,6 @@
 					exchangeImg(imgs);
 				};
 			}
-			function imgDispaly(){
-				img.style.opacity=1;
-
-			}
 			function exchangeImg(imgs){
 				var amount=imgs.length;
 				var firstIndex=parseInt(Math.random()*100%amount);
@@ -98,7 +107,7 @@
 			}
 			function tagHighLight(x,y){
 				// console.log(oldY);
-				if(oldY!="undefined"){
+				if(oldY!=-1){
 					// context.clearRect(oldX,oldY,newimgW,newimgH);
 					context.save();
 					// context.globalAlpha=0.5;
@@ -119,6 +128,7 @@
 			function onMouseMove(e){
 				console.log(thecanvas.offsetLeft+ " offset "+thecanvas.offsetTop);
 				console.log(e.clientX+ " e "+e.clientY);
+				// if(e.clientX-thecanvas.offsetLeft>0&&)
 				mouseX=e.clientX-thecanvas.offsetLeft;
 				mouseY=e.clientY-thecanvas.offsetTop;
 				console.log(mouseX+" mouse "+mouseY);
@@ -143,11 +153,13 @@
 			}
 			function eventTanksLoaded(){
 				var imgs=new Array();
+				
 				initCanvas();
 				initArray(imgs);
 				drawScreen(imgs);
 			}
 			function drawScreen(imgs){
+				context.clearRect(0,0,imgwidth,imgheight*2);
 				context.fillStyle="#aaaaaa";
 				context.fillRect(0,imgheight,imgwidth,imgheight);				
 				var numing=imgs.length-1;

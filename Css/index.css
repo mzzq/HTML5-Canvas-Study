@@ -63,6 +63,10 @@ canvas{
 	margin-top: 10px;
 	margin-bottom: 10px;
 }
+.pintu_option #next{
+	float: right;
+	margin-right: 10px;
+}
 .pintu_option img{
 	opacity: 0;
 	width: 100%;
