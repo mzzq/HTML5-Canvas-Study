@@ -86,13 +86,17 @@ Waves.prototype={
 	},
 	three_drawWave:function(color,alpha){
 		if(!this.maxY()){
-			context.beginPath();
-			context.moveTo(this.x,this.y);
-			context.lineTo(this.x,400);
-			context.globalAlpha=1;
-			context.strokeStyle="#D500F9";
-			context.stroke();
-			context.closePath();
+			// context.beginPath();
+			// context.moveTo(this.x,this.y);
+			// context.lineTo(this.x,400);
+			// context.globalAlpha=1;
+			// context.strokeStyle="#D500F9";
+			// context.stroke();
+			// context.closePath();
+			context.fillStyle="#D500F9";
+			context.fillRect(this.x,this.y,2,400-this.y);
+			context.fill();
+
 		}else{
 			context.save();
 			context.beginPath();
@@ -103,13 +107,16 @@ Waves.prototype={
 			context.stroke();
 			context.closePath();
 			context.restore();
-			context.beginPath();
-			context.moveTo(this.x,this.y);
-			context.lineTo(this.x,400);
-			context.globalAlpha=1;
-			context.strokeStyle="#D500F9";
-			context.stroke();
-			context.closePath();
+			// context.beginPath();
+			// context.moveTo(this.x,this.y);
+			// context.lineTo(this.x,400);
+			// context.globalAlpha=1;
+			// context.strokeStyle="#D500F9";
+			// context.stroke();
+			// context.closePath();
+			context.fillStyle="#D500F9";
+			context.fillRect(this.x,this.y,2,400-this.y);
+			context.fill();
 		}
 	},
 	four_drawWave:function(max_y){
