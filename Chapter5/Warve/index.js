@@ -6,8 +6,8 @@ function eventWindowLoaded(){
 }
 function canvasApp(){
 	//x的取值范围
-	var _min_x=50;
-	var _max_x=350;
+	var _min_x=0;
+	var _max_x=400;
 	var _max_y=300;
 	var _min_y=100;
 	var _waves=new Array();
@@ -19,11 +19,19 @@ function canvasApp(){
 	}		
 	context.strokeStyle="#D500F9";
 	context.lineWidth=1;
-
-	//裁剪自己的形状
-	context.arc(200,200,150,(Math.PI/180)*0,(Math.PI/180)*360,false);
-	context.clip();
-
+	clipShap(200,200,100);
+	function clipShap(dot_x,dot_y,radius){
+		var cos_60=radius/2;
+		var sin_60=radius/2*Math.sqrt(3);
+		context.beginPath();
+		context.moveTo(dot_x-sin_60,dot_y+cos_60);
+		context.arc(dot_x,dot_y,radius,(Math.PI/180)*150,(Math.PI/180)*480,false);
+		context.lineTo(dot_x-cos_60-sin_60,dot_y+cos_60+sin_60);
+		context.moveTo(dot_x-cos_60-sin_60,dot_y+cos_60+sin_60);
+		context.lineTo(dot_x-cos_60,dot_y+sin_60);
+		context.closePath();
+		context.clip();
+	}
 	function loopWave(){
 		context.clearRect(0,0,400,400);
 		context.fillStyle="#333333";
