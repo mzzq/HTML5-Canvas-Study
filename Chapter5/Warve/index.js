@@ -19,26 +19,26 @@ function canvasApp(){
 	}		
 	context.strokeStyle="#D500F9";
 	context.lineWidth=1;
-	clipShap(200,200,100);
-	function clipShap(dot_x,dot_y,radius){
-		var cos_60=radius/2;
-		var sin_60=radius/2*Math.sqrt(3);
-		context.beginPath();
-		context.moveTo(dot_x-sin_60,dot_y+cos_60);
-		context.arc(dot_x,dot_y,radius,(Math.PI/180)*150,(Math.PI/180)*480,false);
-		context.lineTo(dot_x-cos_60-sin_60,dot_y+cos_60+sin_60);
-		context.moveTo(dot_x-cos_60-sin_60,dot_y+cos_60+sin_60);
-		context.lineTo(dot_x-cos_60,dot_y+sin_60);
-		context.closePath();
-		context.clip();
-	}
+	// clipShap(200,200,100);
+	// function clipShap(dot_x,dot_y,radius){
+	// 	var cos_60=radius/2;
+	// 	var sin_60=radius/2*Math.sqrt(3);
+	// 	context.beginPath();
+	// 	context.moveTo(dot_x-sin_60,dot_y+cos_60);
+	// 	context.arc(dot_x,dot_y,radius,(Math.PI/180)*150,(Math.PI/180)*480,false);
+	// 	context.lineTo(dot_x-cos_60-sin_60,dot_y+cos_60+sin_60);
+	// 	context.moveTo(dot_x-cos_60-sin_60,dot_y+cos_60+sin_60);
+	// 	context.lineTo(dot_x-cos_60,dot_y+sin_60);
+	// 	context.closePath();
+	// 	context.clip();
+	// }
 	function loopWave(){
 		context.clearRect(0,0,400,400);
 		context.fillStyle="#333333";
 		context.fillRect(0,0,400,400);
 		// context.beginPath();
 		for(var i=0,j=0;i<_waves.length;i++){
-			_waves[i].y=40*Math.sin((_waves[i].x-_waves[i].speed)*Math.PI/180)+_max_y;
+			_waves[i].y=40*Math.sin((_waves[i].x-_waves[i].speed)*Math.PI/240)+_max_y;
 			_waves[i].fy=30*Math.sin((_waves[i].fx-_waves[i].fspeed)*Math.PI/180)+_max_y;
 
 			// _waves[i].one_drawWave(_waves[i-1]);
