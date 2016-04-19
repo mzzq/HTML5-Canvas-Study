@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+	<head>
+		<title>letters game</title>
+		<link rel="stylesheet" type="text/css" href="../Css/index.css">
+	</head>
+	<body>
+		<canvas id="planeGame" width="600px" height="800px"></canvas>
+		<script type="text/javascript" src="util.js"></script>
+		<script>
+			var thecanvas=document.getElementById('planeGame');
+			var context=thecanvas.getContext("2d");
+			console.log(thecanvas.height);
+			var planes=productPlanes(thecanvas.width);
+			console.log(planes);
+			var t=setInterval(drawBossPlanes,100);
+			function drawBossPlanes(){
+				context.fillStyle="#aaaaaa";
+				context.fillRect(0,0,thecanvas.width,thecanvas.height);
+				for (var i = 0; i <planes.length; i++) {
+					context.save();
+					context.setTransform(1,0,0,1,0,0);
+					context.translate(planes[i].x+32,planes[i].y+32);
+					var angleInRadians=180*Math.PI/180;
+					context.rotate(angleInRadians);
+					context.drawImage(planes[i].img,planes[i].launch*32,0,32,32,-32,-32,64,64);
+					planes[i].launch=planes[i].launch^1;
+					planes[i].y+=8;
+					context.restore();
+				};
+				console.log(planes);
+				if(planes[1].y>thecanvas.height){
+					clearInterval(t);
+				}
+			}
+			//随机生产敌机2或者3架
+			function productPlanes(width){
+				var planes=[];
+				var len=width/3;
+				var x=Math.round(Math.random()*400+1)
+				bossplane1=new BossPlane(x,0);
+				planes.push(bossplane1);
+				if(x<len){
+					bossplane2=new BossPlane(x+len,0);
+					planes.push(bossplane2);
+					if((x+2*len)<(width-32)){
+						bossplane3=new BossPlane(x+2*len,0);
+						planes.push(bossplane3);
+					}
+				}
+				else if(x>2*len){
+					bossplane2=new BossPlane(x-len,0);
+					planes.push(bossplane2);
+					if((x-2*len)>32){
+						bossplane3=new BossPlane(x-2*len,0);
+						planes.push(bossplane3);
+					}
+				}else{
+					bossplane2=new BossPlane(x-len,0);
+					planes.push(bossplane2);
+				}
+				return planes;
+			}
+		</script>
+	</body>
+</html>
