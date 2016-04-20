@@ -11,12 +11,35 @@
 			var thecanvas=document.getElementById('planeGame');
 			var context=thecanvas.getContext("2d");
 			console.log(thecanvas.height);
+			var bullets=[];
+			var myPlane=new MyPlane();
 			var planes=productPlanes(thecanvas.width);
-			console.log(planes);
-			var t=setInterval(drawBossPlanes,100);
+			initDraw();
+			// console.log(planes);
+			var planes_start=setInterval(function(){
+				var plane=productPlanes(thecanvas.width);
+				for (var i = plane.length - 1; i >= 0; i--) {
+					planes.push(plane[i]);
+				};
+			},3000);
+			var t=setInterval(drawBossPlanes,200);
+			// var bullutT=setInterval(drawBullet,400);
+			// function drawBullet(){
+			// 	for (var i = bullets.length - 1; i >= 0; i--) {
+			// 		bullets[i].start(thecanvas,context);
+			// 	};
+			// }
+			// drawBullet();
+			function initDraw(){
+				// context.fillStyle="#aaaaaa";
+				// context.fillRect(0,0,thecanvas.width,thecanvas.height);
+				drawBossPlanes();
+
+			}
 			function drawBossPlanes(){
 				context.fillStyle="#aaaaaa";
 				context.fillRect(0,0,thecanvas.width,thecanvas.height);
+				// planes[0].bullet.start(thecanvas,context);
 				for (var i = 0; i <planes.length; i++) {
 					context.save();
 					context.setTransform(1,0,0,1,0,0);
@@ -25,13 +48,23 @@
 					context.rotate(angleInRadians);
 					context.drawImage(planes[i].img,planes[i].launch*32,0,32,32,-32,-32,64,64);
 					planes[i].launch=planes[i].launch^1;
-					planes[i].y+=8;
+					planes[i].y+=16;
 					context.restore();
+					// new Bullet(planes[i].x,planes[i].y,planes[i].drection).start(thecanvas,context);
+					planes[i].bullet.start(thecanvas,context);
+					if(planes[i].y>thecanvas.height){
+						planes.splice(i,1);
+					}
+					if(planes.length==0){
+						clearInterval(t);
+					}
 				};
+				drawMyPlane();
+				// myPlane.bullet.start();
 				console.log(planes);
-				if(planes[1].y>thecanvas.height){
-					clearInterval(t);
-				}
+			}
+			function drawMyPlane(){
+				context.drawImage(myPlane.img,myPlane.launch*32,0,32,32,thecanvas.width/2-32,thecanvas.height-100,64,64);
 			}
 			//随机生产敌机2或者3架
 			function productPlanes(width){
@@ -40,24 +73,30 @@
 				var x=Math.round(Math.random()*400+1)
 				bossplane1=new BossPlane(x,0);
 				planes.push(bossplane1);
+				bullets.push(bossplane1.bullet);
 				if(x<len){
 					bossplane2=new BossPlane(x+len,0);
 					planes.push(bossplane2);
-					if((x+2*len)<(width-32)){
+					bullets.push(bossplane2.bullet);
+					if((x+2*len)<(width-64)){
 						bossplane3=new BossPlane(x+2*len,0);
 						planes.push(bossplane3);
+						bullets.push(bossplane3.bullet);
 					}
 				}
 				else if(x>2*len){
 					bossplane2=new BossPlane(x-len,0);
 					planes.push(bossplane2);
-					if((x-2*len)>32){
+					bullets.push(bossplane2.bullet);
+					if((x-2*len)>0){
 						bossplane3=new BossPlane(x-2*len,0);
 						planes.push(bossplane3);
+						bullets.push(bossplane3.bullet);
 					}
 				}else{
 					bossplane2=new BossPlane(x-len,0);
 					planes.push(bossplane2);
+					bullets.push(bossplane2.bullet);
 				}
 				return planes;
 			}
