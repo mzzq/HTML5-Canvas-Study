@@ -17,7 +17,7 @@ function canvasApp(){
 		_waves.push(new Waves(i,_min_y,i,_min_y));
 		i+=2;
 	}		
-	context.strokeStyle="#D500F9";
+	context.strokeStyle="#AB47BC";
 	context.lineWidth=1;
 	// clipShap(200,200,100);
 	// function clipShap(dot_x,dot_y,radius){
@@ -43,7 +43,7 @@ function canvasApp(){
 
 			// _waves[i].one_drawWave(_waves[i-1]);
 			// _waves[i].two_drawWave();
-			_waves[i].three_drawWave("#EA80FC","1");
+			_waves[i].three_drawWave("#CE93D8","1");
 			// context.stroke();
 			// context.closePath();
 			_waves[i].speed+=8;
@@ -101,7 +101,7 @@ Waves.prototype={
 			// context.strokeStyle="#D500F9";
 			// context.stroke();
 			// context.closePath();
-			context.fillStyle="#D500F9";
+			context.fillStyle="#64B5F6";
 			context.fillRect(this.x,this.y,2,400-this.y);
 			context.fill();
 
@@ -111,7 +111,7 @@ Waves.prototype={
 			context.moveTo(this.fx,this.fy);
 			context.lineTo(this.x,this.y);
 			context.globalAlpha=alpha;
-			context.strokeStyle="#EA80FC";
+			context.strokeStyle="#BBDEFB";
 			context.stroke();
 			context.closePath();
 			context.restore();
@@ -122,7 +122,7 @@ Waves.prototype={
 			// context.strokeStyle="#D500F9";
 			// context.stroke();
 			// context.closePath();
-			context.fillStyle="#D500F9";
+			context.fillStyle="#64B5F6";
 			context.fillRect(this.x,this.y,2,400-this.y);
 			context.fill();
 		}

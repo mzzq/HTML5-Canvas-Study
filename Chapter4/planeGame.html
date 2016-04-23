@@ -12,34 +12,58 @@
 			var context=thecanvas.getContext("2d");
 			console.log(thecanvas.height);
 			var bullets=[];
-			var myPlane=new MyPlane();
+			var myPlane=new MyPlane(thecanvas.width/2-32,thecanvas.height-100);
 			var planes=productPlanes(thecanvas.width);
-			initDraw();
-			// console.log(planes);
+			document.addEventListener('keydown',hander,false);
+			function hander(event){
+				var e = event || window.event || arguments.callee.caller.arguments[0];
+              	if(e && e.keyCode==38){ // 按上
+                  	myPlane.drection="Up";
+                  	if(myPlane.y>5){
+                  		myPlane.y-=5;
+                  		console.log(myPlane.y);
+                  	}
+                }
+              	if(e && e.keyCode==40){// 按下
+                  	myPlane.drection="Down";
+                  	if(myPlane.y<thecanvas.height-5){
+                  		myPlane.y+=5;
+                  	}
+                }            
+              	if(e && e.keyCode==37){ // 按左
+                  	myPlane.drection="Left";
+                  	if(myPlane.x>5){
+                  		myPlane.x-=5;
+                  	}
+             	}
+             	if(e && e.keyCode==39){ // 按右
+                  	myPlane.drection="Right";
+                  	if(myPlane.x<thecanvas.width-5){
+                  		myPlane.x+=5;
+                  	}
+             	}
+             	if(e && e.keyCode==70){ // 按F
+                  // myPlane.bullet.start(thecanvas,context);
+                  console.log("F");
+             	}
+			}
 			var planes_start=setInterval(function(){
 				var plane=productPlanes(thecanvas.width);
 				for (var i = plane.length - 1; i >= 0; i--) {
 					planes.push(plane[i]);
 				};
 			},3000);
-			var t=setInterval(drawBossPlanes,200);
-			// var bullutT=setInterval(drawBullet,400);
-			// function drawBullet(){
-			// 	for (var i = bullets.length - 1; i >= 0; i--) {
-			// 		bullets[i].start(thecanvas,context);
-			// 	};
-			// }
-			// drawBullet();
+			var t=setInterval(drawPlanes,400);
 			function initDraw(){
-				// context.fillStyle="#aaaaaa";
-				// context.fillRect(0,0,thecanvas.width,thecanvas.height);
 				drawBossPlanes();
-
 			}
-			function drawBossPlanes(){
+			function drawPlanes(){
 				context.fillStyle="#aaaaaa";
 				context.fillRect(0,0,thecanvas.width,thecanvas.height);
-				// planes[0].bullet.start(thecanvas,context);
+				drawMyPlane();
+				drawBossPlanes();
+			}
+			function drawBossPlanes(){
 				for (var i = 0; i <planes.length; i++) {
 					context.save();
 					context.setTransform(1,0,0,1,0,0);
@@ -50,8 +74,8 @@
 					planes[i].launch=planes[i].launch^1;
 					planes[i].y+=16;
 					context.restore();
-					// new Bullet(planes[i].x,planes[i].y,planes[i].drection).start(thecanvas,context);
-					planes[i].bullet.start(thecanvas,context);
+					new Bullet(planes[i].x,planes[i].y,"Down").start(thecanvas,context);
+					// planes[i].bullet.start(thecanvas,context);
 					if(planes[i].y>thecanvas.height){
 						planes.splice(i,1);
 					}
@@ -59,12 +83,11 @@
 						clearInterval(t);
 					}
 				};
-				drawMyPlane();
-				// myPlane.bullet.start();
-				console.log(planes);
 			}
 			function drawMyPlane(){
-				context.drawImage(myPlane.img,myPlane.launch*32,0,32,32,thecanvas.width/2-32,thecanvas.height-100,64,64);
+				context.drawImage(myPlane.img,myPlane.launch*32,0,32,32,myPlane.x,myPlane.y,64,64);
+				// new Bullet(myPlane.x,myPlane.y,"Up").start(thecanvas,context);
+				myPlane.bullet.start(thecanvas,context);
 			}
 			//随机生产敌机2或者3架
 			function productPlanes(width){

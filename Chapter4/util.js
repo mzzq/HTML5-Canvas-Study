@@ -56,10 +56,15 @@ Bullet.prototype.start=function(canvas,context){
 					// clearInterval(t);
 				}
 				break;
+			default:
+				_serf.y-=32;
+				if(_serf.y>0){
+					// clearInterval(t);
+				}
 		}
 		context.drawImage(_serf.bullet,5*32,2*32,32,32,_serf.x+5,_serf.y+32,32,32);
 		context.drawImage(_serf.bullet,5*32,2*32,32,32,_serf.x+27,_serf.y+32,32,32);
 	}
-	// var t=setInterval(move,100);
+	// var t=setInterval(move,30);
 	move();
 }

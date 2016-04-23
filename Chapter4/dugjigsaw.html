@@ -197,6 +197,7 @@
 				context.fillStyle="#aaaaaa";
 				context.fillRect(0,0,thecanvas.width,thecanvas.height);				
 				var numing=0;
+				context.beginPath();
 				for(var rowCtr=0;rowCtr<imgRow;rowCtr++)
 					for(var colCtr=0;colCtr<imgCol&&numing<=exchangimgs.length;colCtr++,numing++){
 						context.drawImage(tanks,exchangimgs[numing].colint*everyimgW,exchangimgs[numing].rowint*everyimgH,everyimgW,everyimgH,colCtr*newimgW,rowCtr*newimgH,newimgW,newimgH);
@@ -206,6 +207,7 @@
 						context.strokeRect(colCtr*newimgW,rowCtr*newimgH,newimgW,newimgH);
 						context.restore();
 					}
+				context.closePath();
 			}
 		}	
 	</script>
